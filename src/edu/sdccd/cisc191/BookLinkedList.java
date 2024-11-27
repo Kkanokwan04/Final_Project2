@@ -2,9 +2,9 @@ package edu.sdccd.cisc191;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
 
-public class BookLinkedList {
+public class BookLinkedList
+{
     private Node head;
     
     public void add(BookOrder book){

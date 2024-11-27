@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 public class Server extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
+        DatabaseConnection.createBookTable();
         BookManager model = new BookManager();
         ScreenView view = new ScreenView(primaryStage);
         new Controller(model, view);

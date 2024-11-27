@@ -4,8 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.util.Comparator;
 import java.util.stream.Collectors;
-import java.util.Observable;
-import javafx.concurrent.Task;
 
 public class BookManager {
 
@@ -13,22 +11,37 @@ public class BookManager {
     private BookDAO bookDAO = new BookDAO();
     private Runnable bookLoaded;
 
-    public BookManager() { loadBooksConcurrently();}
+    public BookManager()
+    {
+        loadBooksConcurrently();
+    }
 
-    public void setBookLoaded(Runnable bookLoaded) {this.bookLoaded = bookLoaded;}
+    public void setBookLoaded(Runnable bookLoaded)
+    {
+        this.bookLoaded = bookLoaded;
+    }
 
-    public void loadBooksConcurrently(){
-        javafx.concurrent.BookOrder<Observable<BookOrder>> loadBook = () -> {
-            ObservableList<BookOrder> books = FXCollections.observableArrayList(bookDAO.getAllBooks());
-            return books;
+    public void loadBooksConcurrently() {
+        javafx.concurrent.Task<ObservableList<BookOrder>> loadBook = new javafx.concurrent.Task()
+        {
+            @Override
+            protected ObservableList<BookOrder> call()
+            {
+                return FXCollections.observableArrayList(bookDAO.getAllBooks());
+            }
         };
 
         loadBook.setOnSucceeded(event -> {
             ObservableList<BookOrder> books = loadBook.getValue();
+
             bookList = new BookLinkedList();
             books.forEach(bookList::add);
 
-            if(bookLoaded != null) {bookLoaded.run();}
+            books.forEach(book -> { System.out.println(book.getBookName()); });
+
+            if (bookLoaded != null) {
+                bookLoaded.run();
+            }
         });
 
         loadBook.setOnFailed(event -> {
@@ -39,7 +52,11 @@ public class BookManager {
         new Thread(loadBook).start();
     }
 
-    public ObservableList<BookOrder> getBooks() { return bookList.toObservableList()}
+
+    public ObservableList<BookOrder> getBooks()
+    {
+        return bookList.toObservableList();
+    }
 
     public void addBook(BookOrder book) {
         bookList.add(book);
