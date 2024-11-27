@@ -2,8 +2,6 @@ package edu.sdccd.cisc191;
 
 import javafx.scene.control.Alert;
 
-import java.awt.print.Book;
-
 public class Controller {
 
     private final BookManager model;
